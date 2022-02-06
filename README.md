@@ -19,4 +19,4 @@ should be needed outside the Tuplet library.
 
 ## Example
 
-See [](test/test_recursive.ml) for an example.
+See [`test_recursive.ml`](test/test_recursive.ml) for an example.
