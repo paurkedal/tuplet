@@ -1,0 +1,4 @@
+(test
+ (name test_recursive)
+ (modules test_recursive)
+ (libraries fmt tuplet))

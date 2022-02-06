@@ -1,0 +1,18 @@
+opam-version: "2.0"
+name: "tuplet"
+version: "0.1"
+synopsis: "Arity-generic API for tuple representations"
+maintainer: "Petter A. Urkedal <paurkedal@gmail.com>"
+authors: "Petter A. Urkedal <paurkedal@gmail.com>"
+license: "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
+homepage: "https://paurkedal.github.com/paurkedal/tuplet/"
+bug-reports: "https://paurkedal.github.com/paurkedal/tuplet/issues"
+dev-repo: "git+https://github.com/paurkedal/tuplet.git"
+depends: [
+  "dune"
+  "fmt" {with-test}
+  "ocaml"
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
