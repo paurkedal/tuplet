@@ -25,6 +25,7 @@ module type Constructors = sig
 
   val t2 : 'a elt -> 'b elt -> ('a * 'b) t
   val t3 : 'a elt -> 'b elt -> 'c elt -> ('a * 'b * 'c) t
+  val t4 : 'a elt -> 'b elt -> 'c elt -> 'd elt -> ('a * 'b * 'c * 'd) t
 end
 
 module type Abstract = sig
@@ -40,9 +41,9 @@ module type S = sig
         ('a * 'b) t
     | T3 : 'a Elt.t * 'b Elt.t * 'c Elt.t ->
         ('a * 'b * 'c) t
-(*
     | T4 : 'a Elt.t * 'b Elt.t * 'c Elt.t * 'd Elt.t ->
         ('a * 'b * 'c * 'd) t
+(*
     | T5 : 'a Elt.t * 'b Elt.t * 'c Elt.t * 'd Elt.t * 'e Elt.t ->
         ('a * 'b * 'c * 'd * 'e) t
     | T6 : 'a Elt.t * 'b Elt.t * 'c Elt.t * 'd Elt.t * 'e Elt.t * 'f Elt.t ->
