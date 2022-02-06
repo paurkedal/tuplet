@@ -1,10 +1,11 @@
 ## Synopsis
 
 Tuplet implements tuple-like heterogeneous vectors over a type constructor,
-providing arity-generic operations.  Each tuplet constructor of arity [n]
+providing arity-generic operations.  A tuplet constructor of arity `n`
 represents a `(α₁ * ... * αₙ) tuplet` as `α₁ elt * ... * αₙ elt`.  Due to
 the heterogeneous nature, all generic operations must be congruent and the
-iterator callbacks must operate on `α elt` universally for `α`.
+callbacks which operate on components of type `α elt` must be generic in
+`α`.
 
 In practise the Tuplet is useful for dealing with representations of tuples
 in GADTs like phantom-typed term representations, as it eliminates treating
