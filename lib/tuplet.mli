@@ -31,10 +31,10 @@ end
 
 module Mapping (A : Sig.S) (B : Sig.S) : sig
 
-  val of_tuple : <call: 'b. 'b A.Elt.t -> 'b -> 'b B.Elt.t> ->
+  val of_tuple : f: <call: 'b. 'b A.Elt.t -> 'b -> 'b B.Elt.t> ->
     'a A.t -> 'a -> 'a B.t
 
-  val map : <call: 'b. 'b A.Elt.t -> 'b B.Elt.t> ->
+  val map : f: <call: 'b. 'b A.Elt.t -> 'b B.Elt.t> ->
     'a A.t -> 'a B.t
 
 end

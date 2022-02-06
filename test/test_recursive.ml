@@ -52,10 +52,9 @@ module rec Type : TYPE with type 'a Tup.Elt.t = 'a Type.t = struct
    | Int -> Fmt.string ppf "int"
    | Array t -> Fmt.(pp ++ sp ++ const string "array") ppf t
    | Tuple u ->
-      let pp' = object
+      Tup.pp ppf u ~f:(object
         method call : 'b. 'b Type.t Fmt.t = pp
-      end in
-      Tup.pp pp' ppf u
+      end)
    | Func (a, b) ->
       Fmt.(using fst pp ++ sp ++ const string "->" ++ sp ++ using snd pp)
         ppf (a, b)
@@ -108,10 +107,10 @@ module rec Value : VALUE with type 'a Tup.Elt.t = 'a Value.t = struct
    | Int _ -> Type.Int
    | Array (t, _) -> Type.Array t
    | Tuple u ->
-      let typeof' = object
+      let u' = MapVT.map u ~f:(object
         method call : 'b. 'b t -> 'b Type.t = typeof
-      end in
-      Tuple (MapVT.map typeof' u)
+      end) in
+      Tuple u'
    | Lambda (t, _) -> t
 
   let rec of_tuple : type a. a Type.t -> a -> a t =
@@ -121,10 +120,9 @@ module rec Value : VALUE with type 'a Tup.Elt.t = 'a Value.t = struct
      | Type.Int, i -> Int i
      | Type.Array t, xs -> Array (t, Array.map (of_tuple t) xs)
      | Type.Tuple t, v ->
-        let of_tuple' = object
+        Tuple (MapTV.of_tuple t v ~f:(object
           method call : 'b. 'b Type.t -> 'b -> 'b t = of_tuple
-        end in
-        Tuple (MapTV.of_tuple of_tuple' t v)
+        end))
      | Type.Func (_, b), f ->
         let f' = of_tuple b % f % to_tuple in
         Lambda (t, f'))
@@ -133,10 +131,9 @@ module rec Value : VALUE with type 'a Tup.Elt.t = 'a Value.t = struct
    | Int i -> i
    | Array (_, xs) -> Array.map to_tuple xs
    | Tuple u ->
-      let to_tuple' = object
+      Tup.to_tuple u ~f:(object
         method call : 'b. 'b t -> 'b = to_tuple
-      end in
-      Tup.to_tuple to_tuple' u
+      end)
    | Lambda (Type.Func (a, _), f) ->
       to_tuple % f % of_tuple a
    | _ -> .
@@ -147,10 +144,9 @@ module rec Value : VALUE with type 'a Tup.Elt.t = 'a Value.t = struct
      | Int i, Int j -> i = j
      | Array (_, xs), Array (_, ys) -> Array.for_all2 equal xs ys
      | Tuple u, Tuple v ->
-        let equal' = object
+        Tup2.for_all (Tup2.cons u v) ~f:(object
           method call : 'b. 'b t * 'b t -> bool = fun (x, y) -> equal x y
-        end in
-        Tup2.for_all equal' (Tup2.cons u v)
+        end)
      | Lambda (_, f), Lambda (_, g) -> f == g
      | _ -> .)
 
@@ -159,10 +155,9 @@ module rec Value : VALUE with type 'a Tup.Elt.t = 'a Value.t = struct
    | Int i -> Format.pp_print_int ppf i
    | Array (_, xs) -> Fmt.(brackets @@ array ~sep:comma pp) ppf xs
    | Tuple tup ->
-      let pp = object
+      Tup.pp ppf tup ~f:(object
         method call : 'b. Format.formatter -> 'b t -> unit = pp
-      end in
-      Tup.pp pp ppf tup
+      end)
    | Lambda (_, _) -> Fmt.(const string "<lambda>") ppf ()
 end
 

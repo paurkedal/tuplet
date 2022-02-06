@@ -39,70 +39,71 @@ module Make (Elt : Sig.Type1) = struct
   let t2 x1 x2 = T2 (x1, x2)
   let t3 x1 x2 x3 = T3 (x1, x2, x3)
 
-  let to_tuple : type a. <call: 'b. 'b Elt.t -> 'b> -> a t -> a =
-    fun f -> function
+  let to_tuple : type a. f: <call: 'b. 'b Elt.t -> 'b> -> a t -> a =
+    fun ~f -> function
      | T2 (x1, x2) ->
         (f#call x1, f#call x2)
      | T3 (x1, x2, x3) ->
         (f#call x1, f#call x2, f#call x3)
 
-  let iter : type a. <call: 'b. 'b Elt.t -> unit> -> a t -> unit =
-    fun f -> function
+  let iter : type a. f: <call: 'b. 'b Elt.t -> unit> -> a t -> unit =
+    fun ~f -> function
      | T2 (x1, x2) ->
         f#call x1; f#call x2
      | T3 (x1, x2, x3) ->
         f#call x1; f#call x2; f#call x3
 
-  let fold : type a. <call: 'c. 'c Elt.t -> 'b -> 'b> -> a t -> 'b -> 'b =
-    fun f -> function
+  let fold : type a. f: <call: 'c. 'c Elt.t -> 'b -> 'b> -> a t -> 'b -> 'b =
+    fun ~f -> function
      | T2 (x1, x2) ->
         f#call x1 %> f#call x2
      | T3 (x1, x2, x3) ->
         f#call x1 %> f#call x2 %> f#call x3
 
-  let for_all : type a. <call: 'b. 'b Elt.t -> bool> -> a t -> bool =
-    fun f -> function
+  let for_all : type a. f: <call: 'b. 'b Elt.t -> bool> -> a t -> bool =
+    fun ~f -> function
      | T2 (x1, x2) ->
         f#call x1 && f#call x2
      | T3 (x1, x2, x3) ->
         f#call x1 && f#call x2 && f#call x3
 
-  let exists : type a. <call: 'b. 'b Elt.t -> bool> -> a t -> bool =
-    fun f -> function
+  let exists : type a. f: <call: 'b. 'b Elt.t -> bool> -> a t -> bool =
+    fun ~f -> function
      | T2 (x1, x2) ->
         f#call x1 || f#call x2
      | T3 (x1, x2, x3) ->
         f#call x1 || f#call x2 || f#call x3
 
-  let map : type a. <call: 'b. 'b Elt.t -> 'b Elt.t> -> a t -> a t =
-    fun f -> function
+  let map : type a. f: <call: 'b. 'b Elt.t -> 'b Elt.t> -> a t -> a t =
+    fun ~f -> function
      | T2 (x1, x2) ->
         T2 (f#call x1, f#call x2)
      | T3 (x1, x2, x3) ->
         T3 (f#call x1, f#call x2, f#call x3)
 
-  let find_map : type a. <call: 'b. 'b Elt.t -> 'c option> -> a t -> 'c option =
-    fun f -> function
+  let find_map :
+        type a. f: <call: 'b. 'b Elt.t -> 'c option> -> a t -> 'c option =
+    fun ~f -> function
      | T2 (x1, x2) ->
         f#call x1 |? fun () -> f#call x2
      | T3 (x1, x2, x3) ->
         f#call x1 |? fun () -> f#call x2 |? fun () -> f#call x3
 
-  let iteri (f : <call: 'b. int -> 'b Elt.t -> unit>) tup =
+  let iteri ~(f : <call: 'b. int -> 'b Elt.t -> unit>) tup =
     let i = ref 0 in
     let f' = object
       method call : 'b. 'b Elt.t -> unit = fun x -> f#call !i x; incr i
     end in
-    iter f' tup
+    iter ~f:f' tup
 
-  let pp (f : <call: 'b. Format.formatter -> 'b Elt.t -> unit>) ppf tup =
+  let pp ~(f : <call: 'b. Format.formatter -> 'b Elt.t -> unit>) ppf tup =
     Format.fprintf ppf "(@[";
     let f' = object
       method call : 'b. int -> 'b Elt.t -> unit = fun i x ->
         if i > 0 then Format.fprintf ppf ",@ ";
         f#call ppf x
     end in
-    iteri f' tup;
+    iteri ~f:f' tup;
     Format.fprintf ppf "@])"
 end
 
@@ -134,17 +135,17 @@ end
 module Mapping (A : Sig.S) (B : Sig.S) = struct
 
   let of_tuple :
-        type a. <call: 'b. 'b A.Elt.t -> 'b -> 'b B.Elt.t> ->
+        type a. f: <call: 'b. 'b A.Elt.t -> 'b -> 'b B.Elt.t> ->
         a A.t -> a -> a B.t =
-    fun f x y ->
+    fun ~f x y ->
     (match x, y with
      | T2 (x1, x2), (y1, y2) ->
         T2 (f#call x1 y1, f#call x2 y2)
      | T3 (x1, x2, x3), (y1, y2, y3) ->
         T3 (f#call x1 y1, f#call x2 y2, f#call x3 y3))
 
-  let map : type a. <call: 'b. 'b A.Elt.t -> 'b B.Elt.t> -> a A.t -> a B.t =
-    fun f -> function
+  let map : type a. f: <call: 'b. 'b A.Elt.t -> 'b B.Elt.t> -> a A.t -> a B.t =
+    fun ~f -> function
      | T2 (x1, x2) ->
         T2 (f#call x1, f#call x2)
      | T3 (x1, x2, x3) ->

@@ -51,20 +51,20 @@ module type S = sig
 
   include Constructors with type 'a elt := 'a Elt.t and type 'a t := 'a t
 
-  val to_tuple : <call: 'b. 'b Elt.t -> 'b> -> 'a t -> 'a
+  val to_tuple : f: <call: 'b. 'b Elt.t -> 'b> -> 'a t -> 'a
 
-  val iter : <call: 'b. 'b Elt.t -> unit> -> 'a t -> unit
+  val iter : f: <call: 'b. 'b Elt.t -> unit> -> 'a t -> unit
 
-  val fold : <call: 'c. 'c Elt.t -> 'b -> 'b> -> 'a t -> 'b -> 'b
+  val fold : f: <call: 'c. 'c Elt.t -> 'b -> 'b> -> 'a t -> 'b -> 'b
 
-  val for_all : <call: 'b. 'b Elt.t -> bool> -> 'a t -> bool
+  val for_all : f: <call: 'b. 'b Elt.t -> bool> -> 'a t -> bool
 
-  val exists : <call: 'b. 'b Elt.t -> bool> -> 'a t -> bool
+  val exists : f: <call: 'b. 'b Elt.t -> bool> -> 'a t -> bool
 
-  val map : <call: 'b. 'b Elt.t -> 'b Elt.t> -> 'a t -> 'a t
+  val map : f: <call: 'b. 'b Elt.t -> 'b Elt.t> -> 'a t -> 'a t
 
-  val find_map : <call: 'b. 'b Elt.t -> 'c option> -> 'a t -> 'c option
+  val find_map : f: <call: 'b. 'b Elt.t -> 'c option> -> 'a t -> 'c option
 
-  val pp : <call: 'b. Format.formatter -> 'b Elt.t -> unit> ->
+  val pp : f: <call: 'b. Format.formatter -> 'b Elt.t -> unit> ->
     Format.formatter -> 'a t -> unit
 end
