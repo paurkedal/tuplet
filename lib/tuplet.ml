@@ -29,16 +29,16 @@ module Make (Elt : Sig.Type1) = struct
         ('a * 'b * 'c) t
     | T4 : 'a Elt.t * 'b Elt.t * 'c Elt.t * 'd Elt.t ->
         ('a * 'b * 'c * 'd) t
-(*
     | T5 : 'a Elt.t * 'b Elt.t * 'c Elt.t * 'd Elt.t * 'e Elt.t ->
         ('a * 'b * 'c * 'd * 'e) t
     | T6 : 'a Elt.t * 'b Elt.t * 'c Elt.t * 'd Elt.t * 'e Elt.t * 'f Elt.t ->
         ('a * 'b * 'c * 'd * 'e * 'f) t
-*)
 
   let t2 x1 x2 = T2 (x1, x2)
   let t3 x1 x2 x3 = T3 (x1, x2, x3)
   let t4 x1 x2 x3 x4 = T4 (x1, x2, x3, x4)
+  let t5 x1 x2 x3 x4 x5 = T5 (x1, x2, x3, x4, x5)
+  let t6 x1 x2 x3 x4 x5 x6 = T6 (x1, x2, x3, x4, x5, x6)
 
   let to_tuple : type a. f: <call: 'b. 'b Elt.t -> 'b> -> a t -> a =
     fun ~f -> function
@@ -48,6 +48,10 @@ module Make (Elt : Sig.Type1) = struct
         (f#call x1, f#call x2, f#call x3)
      | T4 (x1, x2, x3, x4) ->
         (f#call x1, f#call x2, f#call x3, f#call x4)
+     | T5 (x1, x2, x3, x4, x5) ->
+        (f#call x1, f#call x2, f#call x3, f#call x4, f#call x5)
+     | T6 (x1, x2, x3, x4, x5, x6) ->
+        (f#call x1, f#call x2, f#call x3, f#call x4, f#call x5, f#call x6)
 
   let iter : type a. f: <call: 'b. 'b Elt.t -> unit> -> a t -> unit =
     fun ~f -> function
@@ -57,6 +61,10 @@ module Make (Elt : Sig.Type1) = struct
         f#call x1; f#call x2; f#call x3
      | T4 (x1, x2, x3, x4) ->
         f#call x1; f#call x2; f#call x3; f#call x4
+     | T5 (x1, x2, x3, x4, x5) ->
+        f#call x1; f#call x2; f#call x3; f#call x4; f#call x5
+     | T6 (x1, x2, x3, x4, x5, x6) ->
+        f#call x1; f#call x2; f#call x3; f#call x4; f#call x5; f#call x6
 
   let fold : type a. f: <call: 'c. 'c Elt.t -> 'b -> 'b> -> a t -> 'b -> 'b =
     fun ~f -> function
@@ -66,6 +74,12 @@ module Make (Elt : Sig.Type1) = struct
         f#call x1 %> f#call x2 %> f#call x3
      | T4 (x1, x2, x3, x4) ->
         f#call x1 %> f#call x2 %> f#call x3 %> f#call x4
+     | T5 (x1, x2, x3, x4, x5) ->
+        f#call x1 %> f#call x2 %> f#call x3 %> f#call x4 %>
+        f#call x5
+     | T6 (x1, x2, x3, x4, x5, x6) ->
+        f#call x1 %> f#call x2 %> f#call x3 %> f#call x4 %>
+        f#call x5 %> f#call x6
 
   let for_all : type a. f: <call: 'b. 'b Elt.t -> bool> -> a t -> bool =
     fun ~f -> function
@@ -75,6 +89,12 @@ module Make (Elt : Sig.Type1) = struct
         f#call x1 && f#call x2 && f#call x3
      | T4 (x1, x2, x3, x4) ->
         f#call x1 && f#call x2 && f#call x3 && f#call x4
+     | T5 (x1, x2, x3, x4, x5) ->
+        f#call x1 && f#call x2 && f#call x3 && f#call x4 &&
+        f#call x5
+     | T6 (x1, x2, x3, x4, x5, x6) ->
+        f#call x1 && f#call x2 && f#call x3 && f#call x4 &&
+        f#call x5 && f#call x6
 
   let exists : type a. f: <call: 'b. 'b Elt.t -> bool> -> a t -> bool =
     fun ~f -> function
@@ -84,6 +104,12 @@ module Make (Elt : Sig.Type1) = struct
         f#call x1 || f#call x2 || f#call x3
      | T4 (x1, x2, x3, x4) ->
         f#call x1 || f#call x2 || f#call x3 || f#call x4
+     | T5 (x1, x2, x3, x4, x5) ->
+        f#call x1 || f#call x2 || f#call x3 || f#call x4 ||
+        f#call x5
+     | T6 (x1, x2, x3, x4, x5, x6) ->
+        f#call x1 || f#call x2 || f#call x3 || f#call x4 ||
+        f#call x5 || f#call x6
 
   let map : type a. f: <call: 'b. 'b Elt.t -> 'b Elt.t> -> a t -> a t =
     fun ~f -> function
@@ -93,6 +119,10 @@ module Make (Elt : Sig.Type1) = struct
         T3 (f#call x1, f#call x2, f#call x3)
      | T4 (x1, x2, x3, x4) ->
         T4 (f#call x1, f#call x2, f#call x3, f#call x4)
+     | T5 (x1, x2, x3, x4, x5) ->
+        T5 (f#call x1, f#call x2, f#call x3, f#call x4, f#call x5)
+     | T6 (x1, x2, x3, x4, x5, x6) ->
+        T6 (f#call x1, f#call x2, f#call x3, f#call x4, f#call x5, f#call x6)
 
   let find_map :
         type a. f: <call: 'b. 'b Elt.t -> 'c option> -> a t -> 'c option =
@@ -104,6 +134,14 @@ module Make (Elt : Sig.Type1) = struct
      | T4 (x1, x2, x3, x4) ->
         f#call x1 |? fun () -> f#call x2 |? fun () ->
         f#call x3 |? fun () -> f#call x4
+     | T5 (x1, x2, x3, x4, x5) ->
+        f#call x1 |? fun () -> f#call x2 |? fun () ->
+        f#call x3 |? fun () -> f#call x4 |? fun () ->
+        f#call x5
+     | T6 (x1, x2, x3, x4, x5, x6) ->
+        f#call x1 |? fun () -> f#call x2 |? fun () ->
+        f#call x3 |? fun () -> f#call x4 |? fun () ->
+        f#call x5 |? fun () -> f#call x6
 
   let iteri ~(f : <call: 'b. int -> 'b Elt.t -> unit>) tup =
     let i = ref 0 in
@@ -128,14 +166,17 @@ module Product (A : Sig.S) (B : Sig.S) = struct
   include Make (struct type 'a t = 'a A.Elt.t * 'a B.Elt.t end)
 
   let cons : type a. a A.t -> a B.t -> a t =
-    fun a b ->
-    (match a, b with
+    fun a b -> match a, b with
      | T2 (x1, x2), T2 (y1, y2) ->
         T2 ((x1, y1), (x2, y2))
      | T3 (x1, x2, x3), T3 (y1, y2, y3) ->
         T3 ((x1, y1), (x2, y2), (x3, y3))
      | T4 (x1, x2, x3, x4), T4 (y1, y2, y3, y4) ->
-        T4 ((x1, y1), (x2, y2), (x3, y3), (x4, y4)))
+        T4 ((x1, y1), (x2, y2), (x3, y3), (x4, y4))
+     | T5 (x1, x2, x3, x4, x5), T5 (y1, y2, y3, y4, y5) ->
+        T5 ((x1, y1), (x2, y2), (x3, y3), (x4, y4), (x5, y5))
+     | T6 (x1, x2, x3, x4, x5, x6), T6 (y1, y2, y3, y4, y5, y6) ->
+        T6 ((x1, y1), (x2, y2), (x3, y3), (x4, y4), (x5, y5), (x6, y6))
 
   let fst : type a. a t -> a A.t = function
    | T2 ((x1, _), (x2, _)) ->
@@ -144,6 +185,10 @@ module Product (A : Sig.S) (B : Sig.S) = struct
       T3 (x1, x2, x3)
    | T4 ((x1, _), (x2, _), (x3, _), (x4, _)) ->
       T4 (x1, x2, x3, x4)
+   | T5 ((x1, _), (x2, _), (x3, _), (x4, _), (x5, _)) ->
+      T5 (x1, x2, x3, x4, x5)
+   | T6 ((x1, _), (x2, _), (x3, _), (x4, _), (x5, _), (x6, _)) ->
+      T6 (x1, x2, x3, x4, x5, x6)
 
   let snd : type a. a t -> a B.t = function
    | T2 ((_, y1), (_, y2)) ->
@@ -152,6 +197,10 @@ module Product (A : Sig.S) (B : Sig.S) = struct
       T3 (y1, y2, y3)
    | T4 ((_, y1), (_, y2), (_, y3), (_, y4)) ->
       T4 (y1, y2, y3, y4)
+   | T5 ((_, y1), (_, y2), (_, y3), (_, y4), (_, y5)) ->
+      T5 (y1, y2, y3, y4, y5)
+   | T6 ((_, y1), (_, y2), (_, y3), (_, y4), (_, y5), (_, y6)) ->
+      T6 (y1, y2, y3, y4, y5, y6)
 end
 
 module Mapping (A : Sig.S) (B : Sig.S) = struct
@@ -160,13 +209,19 @@ module Mapping (A : Sig.S) (B : Sig.S) = struct
         type a. f: <call: 'b. 'b A.Elt.t -> 'b -> 'b B.Elt.t> ->
         a A.t -> a -> a B.t =
     fun ~f x y ->
-    (match x, y with
+    match x, y with
      | T2 (x1, x2), (y1, y2) ->
         T2 (f#call x1 y1, f#call x2 y2)
      | T3 (x1, x2, x3), (y1, y2, y3) ->
         T3 (f#call x1 y1, f#call x2 y2, f#call x3 y3)
      | T4 (x1, x2, x3, x4), (y1, y2, y3, y4) ->
-        T4 (f#call x1 y1, f#call x2 y2, f#call x3 y3, f#call x4 y4))
+        T4 (f#call x1 y1, f#call x2 y2, f#call x3 y3, f#call x4 y4)
+     | T5 (x1, x2, x3, x4, x5), (y1, y2, y3, y4, y5) ->
+        T5 (f#call x1 y1, f#call x2 y2, f#call x3 y3, f#call x4 y4,
+            f#call x5 y5)
+     | T6 (x1, x2, x3, x4, x5, x6), (y1, y2, y3, y4, y5, y6) ->
+        T6 (f#call x1 y1, f#call x2 y2, f#call x3 y3, f#call x4 y4,
+            f#call x5 y5, f#call x6 y6)
 
   let map : type a. f: <call: 'b. 'b A.Elt.t -> 'b B.Elt.t> -> a A.t -> a B.t =
     fun ~f -> function
@@ -176,6 +231,10 @@ module Mapping (A : Sig.S) (B : Sig.S) = struct
         T3 (f#call x1, f#call x2, f#call x3)
      | T4 (x1, x2, x3, x4) ->
         T4 (f#call x1, f#call x2, f#call x3, f#call x4)
+     | T5 (x1, x2, x3, x4, x5) ->
+        T5 (f#call x1, f#call x2, f#call x3, f#call x4, f#call x5)
+     | T6 (x1, x2, x3, x4, x5, x6) ->
+        T6 (f#call x1, f#call x2, f#call x3, f#call x4, f#call x5, f#call x6)
 end
 
 module Endoconstructors
@@ -184,4 +243,6 @@ struct
   let t2 x1 x2 = F.cons (A.t2 x1 x2)
   let t3 x1 x2 x3 = F.cons (A.t3 x1 x2 x3)
   let t4 x1 x2 x3 x4 = F.cons (A.t4 x1 x2 x3 x4)
+  let t5 x1 x2 x3 x4 x5 = F.cons (A.t5 x1 x2 x3 x4 x5)
+  let t6 x1 x2 x3 x4 x5 x6 = F.cons (A.t6 x1 x2 x3 x4 x5 x6)
 end
