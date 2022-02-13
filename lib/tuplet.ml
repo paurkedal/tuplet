@@ -17,9 +17,6 @@
 
 module Sig = Sig
 
-let (%>) f g x = g (f x)
-let (|?) x y = match x with Some _ as z -> z | None -> y ()
-
 module Make (Elt : Sig.Type1) = struct
   module Elt = Elt
   type _ t =
@@ -67,19 +64,20 @@ module Make (Elt : Sig.Type1) = struct
         f#call x1; f#call x2; f#call x3; f#call x4; f#call x5; f#call x6
 
   let fold : type a. f: <call: 'c. 'c Elt.t -> 'b -> 'b> -> a t -> 'b -> 'b =
-    fun ~f -> function
+    fun ~f tup acc ->
+    (match tup with
      | T2 (x1, x2) ->
-        f#call x1 %> f#call x2
+        acc |> f#call x1 |> f#call x2
      | T3 (x1, x2, x3) ->
-        f#call x1 %> f#call x2 %> f#call x3
+        acc |> f#call x1 |> f#call x2 |> f#call x3
      | T4 (x1, x2, x3, x4) ->
-        f#call x1 %> f#call x2 %> f#call x3 %> f#call x4
+        acc |> f#call x1 |> f#call x2 |> f#call x3 |> f#call x4
      | T5 (x1, x2, x3, x4, x5) ->
-        f#call x1 %> f#call x2 %> f#call x3 %> f#call x4 %>
-        f#call x5
+        acc |> f#call x1 |> f#call x2 |> f#call x3 |> f#call x4
+            |> f#call x5
      | T6 (x1, x2, x3, x4, x5, x6) ->
-        f#call x1 %> f#call x2 %> f#call x3 %> f#call x4 %>
-        f#call x5 %> f#call x6
+        acc |> f#call x1 |> f#call x2 |> f#call x3 |> f#call x4
+            |> f#call x5 |> f#call x6)
 
   let for_all : type a. f: <call: 'b. 'b Elt.t -> bool> -> a t -> bool =
     fun ~f -> function
@@ -128,20 +126,40 @@ module Make (Elt : Sig.Type1) = struct
         type a. f: <call: 'b. 'b Elt.t -> 'c option> -> a t -> 'c option =
     fun ~f -> function
      | T2 (x1, x2) ->
-        f#call x1 |? fun () -> f#call x2
+        begin
+          match f#call x1 with Some _ as y -> y | None ->
+          f#call x2
+        end
      | T3 (x1, x2, x3) ->
-        f#call x1 |? fun () -> f#call x2 |? fun () -> f#call x3
+        begin
+          match f#call x1 with Some _ as y -> y | None ->
+          match f#call x2 with Some _ as y -> y | None ->
+          f#call x3
+        end
      | T4 (x1, x2, x3, x4) ->
-        f#call x1 |? fun () -> f#call x2 |? fun () ->
-        f#call x3 |? fun () -> f#call x4
+        begin
+          match f#call x1 with Some _ as y -> y | None ->
+          match f#call x2 with Some _ as y -> y | None ->
+          match f#call x3 with Some _ as y -> y | None ->
+          f#call x4
+        end
      | T5 (x1, x2, x3, x4, x5) ->
-        f#call x1 |? fun () -> f#call x2 |? fun () ->
-        f#call x3 |? fun () -> f#call x4 |? fun () ->
-        f#call x5
+        begin
+          match f#call x1 with Some _ as y -> y | None ->
+          match f#call x2 with Some _ as y -> y | None ->
+          match f#call x3 with Some _ as y -> y | None ->
+          match f#call x4 with Some _ as y -> y | None ->
+          f#call x5
+        end
      | T6 (x1, x2, x3, x4, x5, x6) ->
-        f#call x1 |? fun () -> f#call x2 |? fun () ->
-        f#call x3 |? fun () -> f#call x4 |? fun () ->
-        f#call x5 |? fun () -> f#call x6
+        begin
+          match f#call x1 with Some _ as y -> y | None ->
+          match f#call x2 with Some _ as y -> y | None ->
+          match f#call x3 with Some _ as y -> y | None ->
+          match f#call x4 with Some _ as y -> y | None ->
+          match f#call x5 with Some _ as y -> y | None ->
+          f#call x6
+        end
 
   let iteri ~(f : <call: 'b. int -> 'b Elt.t -> unit>) tup =
     let i = ref 0 in
