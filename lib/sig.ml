@@ -23,20 +23,37 @@ module type Constructors = sig
   type 'a elt
   type 'a t
 
-  val t2 : 'a1 elt -> 'a2 elt ->
+  val t2 :
+    'a1 elt -> 'a2 elt ->
     ('a1 * 'a2) t
 
-  val t3 : 'a1 elt -> 'a2 elt -> 'a3 elt ->
+  val t3 :
+    'a1 elt -> 'a2 elt -> 'a3 elt ->
     ('a1 * 'a2 * 'a3) t
 
-  val t4 : 'a1 elt -> 'a2 elt -> 'a3 elt -> 'a4 elt ->
+  val t4 :
+    'a1 elt -> 'a2 elt -> 'a3 elt -> 'a4 elt ->
     ('a1 * 'a2 * 'a3 * 'a4) t
 
-  val t5 : 'a1 elt -> 'a2 elt -> 'a3 elt -> 'a4 elt -> 'a5 elt ->
+  val t5 :
+    'a1 elt -> 'a2 elt -> 'a3 elt -> 'a4 elt ->
+    'a5 elt ->
     ('a1 * 'a2 * 'a3 * 'a4 * 'a5) t
 
-  val t6 : 'a1 elt -> 'a2 elt -> 'a3 elt -> 'a4 elt -> 'a5 elt -> 'a6 elt ->
+  val t6 :
+    'a1 elt -> 'a2 elt -> 'a3 elt -> 'a4 elt ->
+    'a5 elt -> 'a6 elt ->
     ('a1 * 'a2 * 'a3 * 'a4 * 'a5 * 'a6) t
+
+  val t7 :
+    'a1 elt -> 'a2 elt -> 'a3 elt -> 'a4 elt ->
+    'a5 elt -> 'a6 elt -> 'a7 elt ->
+    ('a1 * 'a2 * 'a3 * 'a4 * 'a5 * 'a6 * 'a7) t
+
+  val t8 :
+    'a1 elt -> 'a2 elt -> 'a3 elt -> 'a4 elt ->
+    'a5 elt -> 'a6 elt -> 'a7 elt -> 'a8 elt ->
+    ('a1 * 'a2 * 'a3 * 'a4 * 'a5 * 'a6 * 'a7 * 'a8) t
 end
 
 module type Abstract = sig
@@ -48,17 +65,30 @@ module type S = sig
   module Elt : Type1
 
   type _ t =
-    | T2 : 'a1 Elt.t * 'a2 Elt.t ->
+    | T2 :
+        'a1 Elt.t * 'a2 Elt.t ->
         ('a1 * 'a2) t
-    | T3 : 'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t ->
+    | T3 :
+        'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t ->
         ('a1 * 'a2 * 'a3) t
-    | T4 : 'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t ->
+    | T4 :
+        'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t ->
         ('a1 * 'a2 * 'a3 * 'a4) t
-    | T5 : 'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t * 'a5 Elt.t ->
+    | T5 :
+        'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t * 'a5 Elt.t ->
         ('a1 * 'a2 * 'a3 * 'a4 * 'a5) t
-    | T6 : 'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t *
-           'a5 Elt.t * 'a6 Elt.t ->
+    | T6 :
+        'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t *
+        'a5 Elt.t * 'a6 Elt.t ->
         ('a1 * 'a2 * 'a3 * 'a4 * 'a5 * 'a6) t
+    | T7 :
+        'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t *
+        'a5 Elt.t * 'a6 Elt.t * 'a7 Elt.t ->
+        ('a1 * 'a2 * 'a3 * 'a4 * 'a5 * 'a6 * 'a7) t
+    | T8 :
+        'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t *
+        'a5 Elt.t * 'a6 Elt.t * 'a7 Elt.t * 'a8 Elt.t ->
+        ('a1 * 'a2 * 'a3 * 'a4 * 'a5 * 'a6 * 'a7 * 'a8) t
 
   include Constructors with type 'a elt := 'a Elt.t and type 'a t := 'a t
 

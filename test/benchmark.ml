@@ -24,6 +24,8 @@ let cases = [|
   Any_tup (Tup.t4 1 2 3 4);
   Any_tup (Tup.t5 1 2 3 4 5);
   Any_tup (Tup.t6 1 2 3 4 5 6);
+  Any_tup (Tup.t7 1 2 3 4 5 6 7);
+  Any_tup (Tup.t8 1 2 3 4 5 6 7 8);
 |]
 
 let test_iter r =
@@ -66,7 +68,7 @@ let test_find_map r =
 
 let tests =
   let open Bechamel.Test in
-  let args = [2; 3; 4; 5; 6] in
+  let args = [2; 3; 4; 5; 6; 7; 8] in
   make_grouped ~name:"tuplet" [
     make_indexed ~name:"iter" ~args test_iter;
     make_indexed ~name:"fold" ~args test_fold;
