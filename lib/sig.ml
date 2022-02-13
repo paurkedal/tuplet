@@ -23,13 +23,20 @@ module type Constructors = sig
   type 'a elt
   type 'a t
 
-  val t2 : 'a elt -> 'b elt -> ('a * 'b) t
-  val t3 : 'a elt -> 'b elt -> 'c elt -> ('a * 'b * 'c) t
-  val t4 : 'a elt -> 'b elt -> 'c elt -> 'd elt -> ('a * 'b * 'c * 'd) t
-  val t5 : 'a elt -> 'b elt -> 'c elt -> 'd elt -> 'e elt ->
-    ('a * 'b * 'c * 'd * 'e) t
-  val t6 : 'a elt -> 'b elt -> 'c elt -> 'd elt -> 'e elt -> 'f elt ->
-    ('a * 'b * 'c * 'd * 'e * 'f) t
+  val t2 : 'a1 elt -> 'a2 elt ->
+    ('a1 * 'a2) t
+
+  val t3 : 'a1 elt -> 'a2 elt -> 'a3 elt ->
+    ('a1 * 'a2 * 'a3) t
+
+  val t4 : 'a1 elt -> 'a2 elt -> 'a3 elt -> 'a4 elt ->
+    ('a1 * 'a2 * 'a3 * 'a4) t
+
+  val t5 : 'a1 elt -> 'a2 elt -> 'a3 elt -> 'a4 elt -> 'a5 elt ->
+    ('a1 * 'a2 * 'a3 * 'a4 * 'a5) t
+
+  val t6 : 'a1 elt -> 'a2 elt -> 'a3 elt -> 'a4 elt -> 'a5 elt -> 'a6 elt ->
+    ('a1 * 'a2 * 'a3 * 'a4 * 'a5 * 'a6) t
 end
 
 module type Abstract = sig
@@ -41,16 +48,17 @@ module type S = sig
   module Elt : Type1
 
   type _ t =
-    | T2 : 'a Elt.t * 'b Elt.t ->
-        ('a * 'b) t
-    | T3 : 'a Elt.t * 'b Elt.t * 'c Elt.t ->
-        ('a * 'b * 'c) t
-    | T4 : 'a Elt.t * 'b Elt.t * 'c Elt.t * 'd Elt.t ->
-        ('a * 'b * 'c * 'd) t
-    | T5 : 'a Elt.t * 'b Elt.t * 'c Elt.t * 'd Elt.t * 'e Elt.t ->
-        ('a * 'b * 'c * 'd * 'e) t
-    | T6 : 'a Elt.t * 'b Elt.t * 'c Elt.t * 'd Elt.t * 'e Elt.t * 'f Elt.t ->
-        ('a * 'b * 'c * 'd * 'e * 'f) t
+    | T2 : 'a1 Elt.t * 'a2 Elt.t ->
+        ('a1 * 'a2) t
+    | T3 : 'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t ->
+        ('a1 * 'a2 * 'a3) t
+    | T4 : 'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t ->
+        ('a1 * 'a2 * 'a3 * 'a4) t
+    | T5 : 'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t * 'a5 Elt.t ->
+        ('a1 * 'a2 * 'a3 * 'a4 * 'a5) t
+    | T6 : 'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t *
+           'a5 Elt.t * 'a6 Elt.t ->
+        ('a1 * 'a2 * 'a3 * 'a4 * 'a5 * 'a6) t
 
   include Constructors with type 'a elt := 'a Elt.t and type 'a t := 'a t
 

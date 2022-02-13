@@ -20,16 +20,17 @@ module Sig = Sig
 module Make (Elt : Sig.Type1) = struct
   module Elt = Elt
   type _ t =
-    | T2 : 'a Elt.t * 'b Elt.t ->
-        ('a * 'b) t
-    | T3 : 'a Elt.t * 'b Elt.t * 'c Elt.t ->
-        ('a * 'b * 'c) t
-    | T4 : 'a Elt.t * 'b Elt.t * 'c Elt.t * 'd Elt.t ->
-        ('a * 'b * 'c * 'd) t
-    | T5 : 'a Elt.t * 'b Elt.t * 'c Elt.t * 'd Elt.t * 'e Elt.t ->
-        ('a * 'b * 'c * 'd * 'e) t
-    | T6 : 'a Elt.t * 'b Elt.t * 'c Elt.t * 'd Elt.t * 'e Elt.t * 'f Elt.t ->
-        ('a * 'b * 'c * 'd * 'e * 'f) t
+    | T2 : 'a1 Elt.t * 'a2 Elt.t ->
+        ('a1 * 'a2) t
+    | T3 : 'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t ->
+        ('a1 * 'a2 * 'a3) t
+    | T4 : 'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t ->
+        ('a1 * 'a2 * 'a3 * 'a4) t
+    | T5 : 'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t * 'a5 Elt.t ->
+        ('a1 * 'a2 * 'a3 * 'a4 * 'a5) t
+    | T6 : 'a1 Elt.t * 'a2 Elt.t * 'a3 Elt.t * 'a4 Elt.t *
+           'a5 Elt.t * 'a6 Elt.t ->
+        ('a1 * 'a2 * 'a3 * 'a4 * 'a5 * 'a6) t
 
   let t2 x1 x2 = T2 (x1, x2)
   let t3 x1 x2 x3 = T3 (x1, x2, x3)
@@ -163,19 +164,17 @@ module Make (Elt : Sig.Type1) = struct
 
   let iteri ~(f : <call: 'b. int -> 'b Elt.t -> unit>) tup =
     let i = ref 0 in
-    let f' = object
+    iter tup ~f:(object
       method call : 'b. 'b Elt.t -> unit = fun x -> f#call !i x; incr i
-    end in
-    iter ~f:f' tup
+    end)
 
   let pp ~(f : <call: 'b. Format.formatter -> 'b Elt.t -> unit>) ppf tup =
     Format.fprintf ppf "(@[";
-    let f' = object
+    iteri tup ~f:(object
       method call : 'b. int -> 'b Elt.t -> unit = fun i x ->
         if i > 0 then Format.fprintf ppf ",@ ";
         f#call ppf x
-    end in
-    iteri ~f:f' tup;
+    end);
     Format.fprintf ppf "@])"
 end
 
